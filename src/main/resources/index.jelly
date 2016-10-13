@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+  Provides a very basic way of locking named resources per node.
+</div>
