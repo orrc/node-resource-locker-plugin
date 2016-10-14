@@ -22,6 +22,8 @@ public class NodeResourceLocker extends BuildWrapper {
     // Default to 15 minutes
     private static final int DEFAULT_TIMEOUT_SECONDS = 15 * 60;
 
+    private static final int MAX_SLEEP_TIME_SECONDS = 15;
+
     private static final String DEFAULT_RESOURCE_NAME = "node";
 
     private final String resourceName;
@@ -79,6 +81,10 @@ public class NodeResourceLocker extends BuildWrapper {
         // Get the filename we want to grab
         final FilePath file = getResourceLockFile(launcher, name);
 
+        // Initially sleep for half of the max sleep time, to allow others builds already executing to take the lock.
+        // Otherwise, when we're sleeping, and there are a steady stream of jobs entering the queue, we'll never get it
+        Thread.sleep((MAX_SLEEP_TIME_SECONDS * 1000) / 2);
+
         // Keep trying for the configured amount of time
         final long deadline = System.currentTimeMillis() + (timeoutSeconds * 1000);
 
@@ -96,7 +102,7 @@ public class NodeResourceLocker extends BuildWrapper {
             }
 
             // Sleep for a bit
-            Thread.sleep(Math.min(sleepMs, 15 * 1000));
+            Thread.sleep(Math.min(sleepMs, MAX_SLEEP_TIME_SECONDS * 1000));
 
             // Back off a wee bit
             sleepMs *= 1.2;
