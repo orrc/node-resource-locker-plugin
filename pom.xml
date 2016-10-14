@@ -11,7 +11,7 @@
   </parent>
   <groupId>org.jenkins-ci.plugins</groupId>
   <artifactId>node-resource-locker</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
   <packaging>hpi</packaging>
 
   <properties>
